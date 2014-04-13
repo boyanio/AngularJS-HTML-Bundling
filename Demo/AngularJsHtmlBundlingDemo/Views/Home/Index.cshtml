@@ -1,0 +1,25 @@
+﻿@using System.Web.Optimization
+@using HtmlBundling
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Home</title>
+</head>
+<body>
+    <div ng-app="myapp" ng-controller="HomeController">
+        <h1>{{welcomeText}}</h1>
+        <div hello></div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.1/angular.min.js"></script>
+    @Scripts.Render("~/bundles/js")
+    @Scripts.Render("~/bundles/myapp/html")
+    @*HtmlPages.Render("~/bundles/myapp/html")*@
+</body>
+</html>
