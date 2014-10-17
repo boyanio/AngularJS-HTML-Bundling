@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -11,6 +12,12 @@ namespace HtmlBundling
     public class AngularJsHtmlCombine : IBundleTransform
     {
         private const string JsContentType = "text/javascript";
+        private readonly string moduleName;
+
+        public AngularJsHtmlCombine(string moduleName)
+        {
+            this.moduleName = moduleName;
+        }
 
         public virtual void Process(BundleContext context, BundleResponse response)
         {
@@ -21,12 +28,12 @@ namespace HtmlBundling
 
             if (!context.EnableOptimizations)
             {
+                response.Files = new List<BundleFile>();
                 response.Content = string.Empty;
                 return;
             }
 
-            string appName = GetAppName(context);
-            if (String.IsNullOrWhiteSpace(appName))
+            if (string.IsNullOrWhiteSpace(this.moduleName))
             {
                 response.Content = "// No or wrong app name defined";
                 response.ContentType = JsContentType;
@@ -35,7 +42,7 @@ namespace HtmlBundling
 
             var contentBuilder = new StringBuilder();
             contentBuilder.Append("(function(){");
-            contentBuilder.AppendFormat("angular.module('{0}').run(['$templateCache',function(t){{", appName);
+            contentBuilder.AppendFormat("angular.module('{0}').run(['$templateCache',function(t){{", this.moduleName);
 
             foreach (BundleFile file in response.Files)
             {
@@ -53,13 +60,6 @@ namespace HtmlBundling
 
             response.Content = contentBuilder.ToString();
             response.ContentType = JsContentType;
-        }
-
-        private static string GetAppName(BundleContext context)
-        {
-            // TODO: maybe use a better way to determine the app name. Query Strings are problematic with bundles
-            Match m = Regex.Match(context.BundleVirtualPath, "/([a-zA-Z0-9_]+)/html");
-            return m.Success ? m.Groups[1].Value : null;
         }
     }
 }
