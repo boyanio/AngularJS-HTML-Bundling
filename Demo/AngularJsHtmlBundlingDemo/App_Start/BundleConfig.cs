@@ -8,7 +8,7 @@ namespace AngularJsHtmlBundlingDemo
         public static void Register(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/bundles/js").Include("~/Content/app.js"));
-            bundles.Add(new AngularJsHtmlBundle("~/bundles/myapp/html").Include("~/Content/*.html"));
+            bundles.Add(new AngularJsHtmlBundle("myapp", "~/bundles/myapp/html").Include("~/Content/*.html"));
         }
     }
 }
